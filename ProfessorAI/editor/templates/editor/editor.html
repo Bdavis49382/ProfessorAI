@@ -1,0 +1,43 @@
+{% load static %} {# Load the tag library #} {% load bootstrap5 %} {% bootstrap_css %} {% bootstrap_javascript %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{% static 'editor/style.css' %}" />
+    <title>Professor AI Editor</title>
+  </head>
+  <body>
+    <h1 class="bg-secondary">Professor AI</h1>
+    <div class="row h-100">
+      <div class="col border border-secondary">
+        <h1>Coding Challenge</h1>
+        <button>I'm ready</button>
+        <p>
+          Write a python program that will display the message: "Hello World!"
+        </p>
+      </div>
+      <div class="col border border-secondary">
+        <h4>Code Editor</h4>
+        <form action="/editor/" method="post">
+          {% csrf_token %}
+          {{ form.as_p }}
+          <button type="submit">Run</button>
+          <button>Submit</button>
+        </form>
+        <div class="row h-50">
+          <div class="col border border-secondary bg-dark text-white">
+            <h4>Terminal</h4>
+            <p id="terminal">{{ terminal|safe }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div></div>
+    <div
+      class="text-align-end border border-primary rounded-circle bg-primary cursor-pointer d-inline-block"
+    >
+      💬
+    </div>
+  </body>
+</html>
