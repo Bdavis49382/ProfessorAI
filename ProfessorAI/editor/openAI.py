@@ -2,6 +2,7 @@ from openai import OpenAI
 
 # os.environ['OPENAI_API_KEY'] = 
 def get_coding_problem():
+    # return 'Coding Problem'
     client = OpenAI()
 
     completion = client.chat.completions.create(
@@ -44,6 +45,7 @@ In order to work closely with the parts of a string, the [] syntax can be used. 
     return completion.choices[0].message.content
 
 def get_coding_feedback(problem, code_str):
+    # return f'coding problem: {problem}, code: {code_str}'
     client = OpenAI()
 
     completion = client.chat.completions.create(
@@ -70,7 +72,7 @@ Example Output:
              """},
             {
                 "role": "user",
-                "content": f"{problem : ${problem}, code : ${code_str}}"
+                "content": f"{{problem : {problem}, code : {code_str}}}"
             }
         ]
     )

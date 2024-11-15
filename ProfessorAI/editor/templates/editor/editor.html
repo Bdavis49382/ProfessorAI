@@ -12,18 +12,21 @@
     <div class="row h-100">
       <div class="col border border-secondary">
         <h1>Coding Challenge</h1>
-        <button>I'm ready</button>
-        <p>
-          Write a python program that will display the message: "Hello World!"
-        </p>
+        {{customer_list}}
+        <form action="/editor/" method="post">
+          {% csrf_token %}
+          {{ request_form.as_p}}
+          <button type="submit" class="btn-outline-primary rounded">I'm ready</button>
+        </form>
+        {{ AI_message|safe}}
       </div>
       <div class="col border border-secondary">
         <h4>Code Editor</h4>
         <form action="/editor/" method="post">
           {% csrf_token %}
-          {{ form.as_p }}
-          <button type="submit">Run</button>
-          <button>Submit</button>
+          {{ editor_form.as_p }}
+          <button type="submit" name="run_code">Run</button>
+          <button type="submit" name="submit_code">Submit</button>
         </form>
         <div class="row h-50">
           <div class="col border border-secondary bg-dark text-white">
@@ -32,12 +35,32 @@
           </div>
         </div>
       </div>
+    {% if chat_open %}
+      <div class="col-5 position-fixed bg-light top-25 h-75 rounded border ">
+        <div class="d-flex flex-column justify-content-between h-100">
+          <p>Got Questions? Ask me anything.</p>
+          <div>
+            <p class="text-gray">Examples:<br>Why is my code on line 5 throwing an error?<br>What is the syntax for making a list again?</p>
+            <input class="mb-1 w-100"></input>
+          </div>
+        </div>
+      </div>
+    {% endif %}
     </div>
-    <div></div>
-    <div
-      class="text-align-end border border-primary rounded-circle bg-primary cursor-pointer d-inline-block"
-    >
-      💬
+    <div class="row justify-content-end position-fixed bottom-0 d-block">
+      <div class="col-1 d-block w-25">
+        <form action="/editor/" method="post">
+          {% csrf_token %}
+          {{open_chat_form}}
+          <button
+            type="submit"
+            name="chat_button"
+            class="border border-secondary shadow-lg rounded-circle btn-primary d-block btn-lg ms-4 mb-2"
+          >
+            💬
+          </button>
+        </form>
+      </div>
     </div>
   </body>
 </html>

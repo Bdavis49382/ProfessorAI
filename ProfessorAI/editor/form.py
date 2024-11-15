@@ -5,3 +5,6 @@ class EditorBox(forms.Form):
 
 class RequestProblem(forms.Form):
     request_button = forms.CharField(widget=forms.HiddenInput(), initial='submit')
+
+class OpenChatBox(forms.Form):
+    chat_button = forms.CharField(widget=forms.HiddenInput(), initial="submit")
