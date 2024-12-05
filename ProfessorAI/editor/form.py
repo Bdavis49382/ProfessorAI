@@ -6,5 +6,8 @@ class EditorBox(forms.Form):
 class RequestProblem(forms.Form):
     request_button = forms.CharField(widget=forms.HiddenInput(), initial='submit')
 
-class OpenChatBox(forms.Form):
-    chat_button = forms.CharField(widget=forms.HiddenInput(), initial="submit")
+class ChatBox(forms.Form):
+    chat_box = forms.CharField(widget=forms.TextInput(attrs={'class':"mb-1 w-100"}))
+
+class LogOut(forms.Form):
+    logout_button = forms.CharField(widget=forms.HiddenInput(), initial='submit')

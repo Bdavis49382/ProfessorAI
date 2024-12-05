@@ -1,0 +1,33 @@
+{% load static %} {# Load the tag library #} {% load bootstrap5 %} {% bootstrap_css %} {% bootstrap_javascript %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://accounts.google.com/gsi/client" async></script>
+    <title>Professor AI | Login</title>
+</head>
+<body>
+    <div class="row d-flex justify-content-center">
+        <div class="col-4 mt-5 pb-5 pt-5 border rounded border-4">
+            <h2>Login to Continue to Professor AI</h2>
+            <div id="g_id_onload"
+                data-client_id="77657358503-6a6uo2p58t1bv0r0j3vggkapo25f2qk0.apps.googleusercontent.com"
+                data-context="signin"
+                data-ux_mode="redirect"
+                data-login_uri="http://localhost:8000/auth-callback"
+                data-auto_prompt="false">
+            </div>
+
+            <div class="g_id_signin"
+                data-type="standard"
+                data-shape="rectangular"
+                data-theme="outline"
+                data-text="signin_with"
+                data-size="large"
+                data-logo_alignment="left">
+            </div>
+        </div>
+    </div>
+</body>
+</html>

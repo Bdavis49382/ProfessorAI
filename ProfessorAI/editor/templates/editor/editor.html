@@ -5,24 +5,59 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="{% static 'editor/style.css' %}" />
-    <title>Professor AI Editor</title>
+    <script src="{% static 'editor/script.js' %}" defer></script>
+    <title>Professor AI | Editor</title>
   </head>
   <body>
-    <h1 class="bg-secondary">Professor AI</h1>
+    <div class="row bg-secondary">
+      <h1 class="col-6">Professor AI</h1>
+      <div class="col-6 d-flex justify-content-end">
+        <div class="m-2">
+          {{ name}}
+          <form action="/login" method="post">
+            {% csrf_token %}
+            {{ log_out }}
+            <button type="submit" class="btn-outline-primary rounded">Logout</button>
+          </form>
+        </div>
+      </div>
+    </div>
     <div class="row h-100">
       <div class="col border border-secondary">
         <h1>Coding Challenge</h1>
-        {{customer_list}}
-        <form action="/editor/" method="post">
+        <form action="/" method="post">
           {% csrf_token %}
           {{ request_form.as_p}}
-          <button type="submit" class="btn-outline-primary rounded">I'm ready</button>
+          <div class="row d-flex justify-content-center">
+            <button type="submit" class="btn-outline-primary rounded col-2 mt-4" id="request-button">I'm ready</button>
+          </div>
         </form>
-        {{ AI_message|safe}}
+        <p style="display:none" id="loader">Professor AI is thinking...</p>
+        {% if AI_message %}
+          {{ AI_message.feedback|safe }}
+          {% if not AI_message.finished %}
+          <h1>
+            {{ AI_message.name}}
+          </h1>
+          <h2>Overview</h2>
+          <p>{{ AI_message.overview}}</p>
+          <h2>Examples</h2>
+          <ul>
+            {% for example in AI_message.examples %}
+              <li>
+                <p>Input: {{ example.input }}</p>
+                <p>Expected Response: {{ example.expected_response }}</p>
+              </li>
+            {% endfor %}
+          </ul>
+          <h2>New Concept - {{ AI_message.new_concept.name }}</h2>
+          <p>{{ AI_message.new_concept.explanation }}</p>
+          {% endif %}
+        {% endif %}
       </div>
       <div class="col border border-secondary">
         <h4>Code Editor</h4>
-        <form action="/editor/" method="post">
+        <form action="/" method="post">
           {% csrf_token %}
           {{ editor_form.as_p }}
           <button type="submit" name="run_code">Run</button>
@@ -35,31 +70,34 @@
           </div>
         </div>
       </div>
-    {% if chat_open %}
-      <div class="col-5 position-fixed bg-light top-25 h-75 rounded border ">
+      <div class="col-5 position-fixed bg-info top-25 h-75 rounded border border-4 border-info {% if chat_open %} d-block {% else %} d-none {% endif %}"  id="chat-box">
         <div class="d-flex flex-column justify-content-between h-100">
           <p>Got Questions? Ask me anything.</p>
+          <div class="overflow-auto bg-secondary p-1">
+            {% for statement in conversation %}
+              <p class="border rounded bg-white">{{ statement }}</p>
+            {% endfor %}
+          </div>
           <div>
             <p class="text-gray">Examples:<br>Why is my code on line 5 throwing an error?<br>What is the syntax for making a list again?</p>
-            <input class="mb-1 w-100"></input>
+            <form action="/" method="post">
+            {% csrf_token %}
+            {{ chat_box}}
+              <!-- <input class="mb-1 w-100"></input> -->
+              <button type="submit" name="ask_question">Send</button>
+            </form>
           </div>
         </div>
       </div>
-    {% endif %}
     </div>
     <div class="row justify-content-end position-fixed bottom-0 d-block">
       <div class="col-1 d-block w-25">
-        <form action="/editor/" method="post">
-          {% csrf_token %}
-          {{open_chat_form}}
-          <button
-            type="submit"
-            name="chat_button"
-            class="border border-secondary shadow-lg rounded-circle btn-primary d-block btn-lg ms-4 mb-2"
-          >
-            💬
-          </button>
-        </form>
+        <button
+          id="chat-button"
+          class="border border-secondary shadow-lg rounded-circle btn-primary btn-lg ms-4 mb-2"
+        >
+          💬
+        </button>
       </div>
     </div>
   </body>

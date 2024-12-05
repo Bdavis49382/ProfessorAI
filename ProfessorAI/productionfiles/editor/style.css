@@ -1,0 +1,11 @@
+body {
+    background-color: white;
+}
+
+#editor {
+    font-family: 'Consolas';
+}
+
+#chat-box {
+    display: none;
+}

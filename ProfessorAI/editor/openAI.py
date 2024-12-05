@@ -1,4 +1,5 @@
 from openai import OpenAI
+import json
 
 # os.environ['OPENAI_API_KEY'] = 
 def get_coding_problem():
@@ -20,21 +21,29 @@ Input Format:
 A request for a new coding problem which includes a list of concepts already learned.
 
 Output Format:
-A standard coding problem format with a title, overview, and example. Also an explanation section at the end if there is a key concept they don't already understand in the problem. Use HTML tags for formatting. Don't ever ask them to use the input function in their python code.
+A standard coding problem format with a title, overview, and example. Also an explanation section at the end if there is a key concept they don't already understand in the problem. Use JSON format. Don't ever ask them to use the input function in their python code.
 
 Example Output:
-Palindrome Checker
-Overview: This coding problem requires you to determine whether a given string is a palindrome. A palindrome is a word, phrase, number, or other sequence of characters that reads the same forward and backward (ignoring spaces, punctuation, and capitalization). Your task is to write a function that takes a string as input and returns true if it is a palindrome, and false otherwise.
-
-Example:
-Input: "A man, a plan, a canal, Panama"
-Expected Response: true
-
-Input: "Hello"
-Expected Response: false
-
-New Concept - Indexing a String:
-In order to work closely with the parts of a string, the [] syntax can be used. Just like a list, strings can be accessed by index using the square brackets. For example, my_string[0] would be the first character in my_string.
+{
+    "name": "Palindrome  Checker",
+    "overview": "This coding problem requires you to determine whether a given string is a palindrome. A palindrome is a word, phrase, number, or other sequence of characters that reads the same forward and backward (ignoring spaces, punctuation, and capitalization). Your task is to write a function that takes a string as input and returns true if it is a palindrome, and false otherwise.",
+    "examples": 
+             [
+                {
+                    "input": "A man, a plan, a canal, Panama",
+                    "expected_response": "true"
+                },
+                {
+                    "input": "Hello",
+                    "expected_response": "false"
+                }
+             ],
+    "new_concept":  
+             {
+                name: "Indexing a String",
+                "explanation": "In order to work closely with the parts of a string, the [] syntax can be used. Just like a list, strings can be accessed by index using the square brackets. For example, my_string[0] would be the first character in my_string."
+             }
+}
              """},
             {
                 "role": "user",
@@ -42,10 +51,9 @@ In order to work closely with the parts of a string, the [] syntax can be used. 
             }
         ]
     )
-    return completion.choices[0].message.content
+    return json.loads(completion.choices[0].message.content)
 
 def get_coding_feedback(problem, code_str):
-    # return f'coding problem: {problem}, code: {code_str}'
     client = OpenAI()
 
     completion = client.chat.completions.create(
@@ -73,6 +81,38 @@ Example Output:
             {
                 "role": "user",
                 "content": f"{{problem : {problem}, code : {code_str}}}"
+            }
+        ]
+    )
+    return completion.choices[0].message.content
+
+def get_answer(question, context):
+    client = OpenAI()
+
+    completion = client.chat.completions.create(
+        model = "gpt-4o-mini",
+        messages = [
+            {"role": "system", "content": """
+            Full Context:
+You are a python instructor who gives your students coding problems. Your student is sending you a question relating to their problem. You need to answer them as concisely as possible. Do not allow them to get off topic.
+
+Steps:
+1. Compare the question to the problem they are solving and the code they have written.
+2. Answer the question based on the code they have written and the problem they are trying to solve.
+3. Ensure that the answer will not give away the solution to the problem unless the student is clearly struggling and needs to be given the solution.
+
+Input Format:
+A JSON object with a question and context which includes the entire conversation, as well as the problem you have sent them and their code.
+
+Output Format:
+A simple answer in string format which answers the question and perhaps includes a link to an online resource with more information.
+
+Example Output:
+The error on line 5 you are asking about is caused by indexing off the end of a list. This often happens when we forget that list's indices start at 0
+             """},
+            {
+                "role": "user",
+                "content": f"{{question : {question}, context : {context}}}"
             }
         ]
     )
