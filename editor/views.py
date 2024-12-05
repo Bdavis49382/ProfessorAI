@@ -12,7 +12,6 @@ import sys, io, json, os
 def editor(request):
     if 'user_data' not in request.session:
         return redirect('login')
-    print(request.session['user_data'])
     session_user = request.session['user_data']
     name = session_user['given_name']
     user = users.find_one({"email":session_user['email']})
