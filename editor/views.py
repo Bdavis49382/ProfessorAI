@@ -119,6 +119,10 @@ def callback(request):
 def login(request):
     if request.method == "POST" and 'logout_button' in request.POST:
         request.session.pop('user_data')
+
+    if 'user_data' in request.session:
+        return redirect('editor')
+
     return render(request, "editor/login.html",{"environment":os.getenv('ENVIRONMENT')})
 
 
