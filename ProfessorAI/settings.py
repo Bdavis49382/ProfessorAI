@@ -27,7 +27,8 @@ SECRET_KEY = 'django-insecure-wo#fg@lckw^c)ez&f$af%d3dyh3s#vb)w40w#!-zc!$$d1^yvt
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    "https://professorai-vuun.onrender.com"
+    "https://professorai-vuun.onrender.com",
+    "professorai-vuun.onrender.com"
 ]
 
 
