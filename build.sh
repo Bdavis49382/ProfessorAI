@@ -6,7 +6,7 @@ set -o errexit
 pip install -r requirements.txt
 
 # Convert static asset files
-python manage.py collectstatic --no-input
+python ProfessorAI/manage.py collectstatic --no-input
 
 # Apply any outstanding database migrations
-python manage.py migrate
+python ProfessorAI/manage.py migrate
