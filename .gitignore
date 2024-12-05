@@ -2,3 +2,4 @@ ProfessorAIEnv/
 .env
 __pycache__/
 productionfiles/admin
+.sqlite3
