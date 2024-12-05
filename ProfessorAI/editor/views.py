@@ -119,7 +119,7 @@ def callback(request):
 def login(request):
     if request.method == "POST" and 'logout_button' in request.POST:
         request.session.pop('user_data')
-    return render(request, "editor/login.html")
+    return render(request, "editor/login.html",{"environment":os.getenv('ENVIRONMENT')})
 
 
 def get_code_result(code_string):
@@ -143,4 +143,4 @@ def format_feedback(feedback):
         output += '<h2>Problem Solved Successfully!</h2>'
     else:
         output += '<h2>Incorrect Solution. Try again.</h2>'
-    return output + f'<p>{feedback['feedback']}<p>'
+    return output + f'<p>{feedback["feedback"]}<p>'
