@@ -58,11 +58,13 @@
       </div>
       <div class="col border border-secondary">
         <h4>Code Editor</h4>
-        <form action="/" method="post">
+        <form action="/" method="post" id="code-form">
+          <p id="saved">Your code is saved.</p>
           {% csrf_token %}
           {{ editor_form.as_p }}
-          <button type="submit" name="run_code">Run</button>
-          <button type="submit" name="submit_code">Submit</button>
+          <button type="submit" name="save_code" id="save-button" title="Ctrl + S">Save</button>
+          <button type="submit" name="run_code" id="run-button" title="Ctrl + Enter">Run</button>
+          <button type="submit" name="submit_code" id="submit-button" title="Ctrl + Shift + Enter">Submit</button>
         </form>
         <div class="row h-50">
           <div class="col border border-secondary bg-dark text-white">

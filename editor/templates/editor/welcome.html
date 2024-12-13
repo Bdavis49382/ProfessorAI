@@ -1,0 +1,24 @@
+{% load static %} {# Load the tag library #} {% load bootstrap5 %} {% bootstrap_css %} {% bootstrap_javascript %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-5 border rounded">
+            <h1>Welcome to ProfessorAI!</h1>
+            <h4>It appears that this is your first time here. How would you describe your knowledge of programming with python in a single sentence?</h2>
+            <form action="/welcome" method="post">
+                {% csrf_token %}
+                {{ experience_form.as_p}}
+                <button type="submit">Confirm</button>
+            </form>
+
+        </div>
+
+    </div>
+</body>
+</html>

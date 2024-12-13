@@ -2,7 +2,7 @@ from openai import OpenAI
 import json
 
 # os.environ['OPENAI_API_KEY'] = 
-def get_coding_problem():
+def get_coding_problem(previous_knowledge, topics_covered):
     # return 'Coding Problem'
     client = OpenAI()
 
@@ -18,7 +18,7 @@ Steps:
 2. Write the coding problem
 
 Input Format:
-A request for a new coding problem which includes a list of concepts already learned.
+A request for a new coding problem which includes a list of concepts already learned and a statement about their knowledge before using this program.
 
 Output Format:
 A standard coding problem format with a title, overview, and example. Also an explanation section at the end if there is a key concept they don't already understand in the problem. Use JSON format. Don't ever ask them to use the input function in their python code.
@@ -47,7 +47,7 @@ Example Output:
              """},
             {
                 "role": "user",
-                "content": "I need a coding problem, I already understand the print statement but that's it"
+                "content":f'{{"previous_knowledge":{previous_knowledge},"topics_covered":{topics_covered}}}'
             }
         ]
     )
@@ -67,7 +67,7 @@ Steps:
 1. Compare the coding problem to the response.
 2. Evaluate if the response code solved the problem.
 3. Write a message to the student that tells them whether they solved the problem correctly.
-4. Include in the message any feedback on how the code could be better or teach a concept if the student did not understand
+4. Include in the message any feedback on how the code could be better or teach a concept if the student did not understand. If they didn't understand, don't simply give them the answer.
 
 Input Format:
 A request for feedback on code. Includes full code problem as well as the student's attempt.
@@ -76,7 +76,7 @@ Output Format:
 A json object with a success attribute which is a boolean representing whether the student solved the problem or not, and a feedback attribute which is a string containing any feedback or teaching in response to the code.
 
 Example Output:
-{success: true, feedback: "Your code did a great job of finding the vowels in that string! One thing that could have been improved was your use of a while loop to loop through a list. Another approach would have been to use a for loop which allows you to loop through a collection like a string more simply. For example: for letter in my_str:\n    print(letter)"}
+{success: true, feedback: "Your code did a great job of finding the vowels in that string! One thing that could have been improved was your use of a while loop to loop through a list. Another approach would have been to use a for loop which allows you to loop through a collection like a string more simply."}
              """},
             {
                 "role": "user",

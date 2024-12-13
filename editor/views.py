@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .form import EditorBox, RequestProblem, ChatBox, LogOut
+from .form import EditorBox, RequestProblem, ChatBox, LogOut, ExperienceForm
 from .openAI import get_coding_problem, get_coding_feedback, get_answer
 from .models import users
 from google.oauth2 import id_token
@@ -19,8 +19,7 @@ def editor(request):
         cid = user['_id']
     else:
         result = users.insert_one({'email':session_user['email']})
-        cid = result.inserted_id
-        user = users.find_one({'_id':cid})
+        return redirect('welcome')
 
     terminal = ''
     ai_message = ''
@@ -42,6 +41,11 @@ def editor(request):
                 code_string = editor_form.cleaned_data['python_code']
                 terminal = get_code_result(code_string)
                 users.update_one({"_id":cid},{"$set": {"last_code": code_string}})
+        elif 'save_code' in request.POST:
+            editor_form = EditorBox(request.POST)
+            if editor_form.is_valid():
+                code_string = editor_form.cleaned_data['python_code']
+                users.update_one({"_id":cid},{"$set": {"last_code": code_string}})
         elif 'chat_box' in request.POST:
             if 'last_code' in user:
                 editor_form = EditorBox({'python_code':user['last_code']})
@@ -58,7 +62,7 @@ def editor(request):
                 users.update_one({"_id":cid},{"$set": {"active_conversation": conversation}})
         elif 'request_button' in request.POST:
             editor_form = EditorBox()
-            ai_message = get_coding_problem()
+            ai_message = get_coding_problem(user['previous_knowledge'],user['topics_covered'])
             users.update_one({"_id":cid},{"$set": {"last_message": ai_message,"last_problem": ai_message, "last_code": "", "active_conversation":[]}})
             conversation = []
             last_message = ai_message
@@ -78,7 +82,8 @@ def editor(request):
 
                     # If the problem was solved, get rid of it, otherwise, add it to the message for reference.
                     if feedback['success']:
-                        users.update_one({"_id":cid},{"$set": {"last_problem": "","active_conversation": []}})
+                        topics_covered = user['topics_covered'] + [last_problem['new_concept']['name']]
+                        users.update_one({"_id":cid},{"$set": {"last_problem": "","active_conversation": [],"topics_covered":topics_covered}})
                         last_message['finished'] = True
                     else:
                         users.update_one({"_id":cid},{"$set": {"last_message": last_message}})
@@ -123,6 +128,21 @@ def login(request):
         return redirect('editor')
 
     return render(request, "editor/login.html",{"environment":os.getenv('ENVIRONMENT')})
+
+def welcome(request):
+    experience_form = ExperienceForm()
+    if request.method == "POST" and 'experience' in request.POST:
+        experience_form = ExperienceForm(request.POST)
+        if experience_form.is_valid():
+            if 'user_data' not in request.session:
+                return redirect('login')
+            session_user = request.session['user_data']
+            name = session_user['given_name']
+            user = users.find_one({"email":session_user['email']})
+            users.update_one({"_id":user["_id"]},{"$set": {"previous_knowledge": experience_form.cleaned_data['experience'], "topics_covered":[]}})
+            return redirect('editor')
+
+    return render(request, "editor/welcome.html", {"experience_form":experience_form})
 
 
 def get_code_result(code_string):
