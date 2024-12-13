@@ -25,14 +25,18 @@
     </div>
     <div class="row h-100">
       <div class="col border border-secondary">
-        <h1>Coding Challenge</h1>
-        <form action="/" method="post">
-          {% csrf_token %}
-          {{ request_form.as_p}}
-          <div class="row d-flex justify-content-center">
-            <button type="submit" class="btn-outline-primary rounded col-2 mt-4" id="request-button">I'm ready</button>
+        <div class="row">
+          <div class="col-6">
+            <h1>Coding Challenge</h1>
           </div>
-        </form>
+          <div class="col-6 d-flex justify-content-center">
+            <form action="/" method="post">
+              {% csrf_token %}
+              {{ request_form.as_p}}
+              <button type="submit" class="btn-outline-primary rounded mt-4 p-1" id="request-button">Get New Challenge</button>
+            </form>
+          </div>
+        </div>
         <p style="display:none" id="loader">Professor AI is thinking...</p>
         {% if AI_message %}
           {{ AI_message.feedback|safe }}
